@@ -1,0 +1,21 @@
+## Iniciando o docker nesse repositório:
+docker run -p 8888:8888 -v C:\Users\esped\Documents\Respositorio_git\Repositorio_projetos\image_spark_project:/home/jovyan/work jupyter/pyspark-notebook:spark-3.3.2
+
+
+
+## lista os containers:  
+docker ps
+
+## Abre o terminal dentro do container: 
+docker exec -it id_container bash
+
+## ignorar o pacote raiz:
+poetry install --no-root
+
+## Iniciar o Contêiner Nomeando-o:
+docker run -p 8888:8888 -v /caminho/local/do/seu/projeto:/home/jovyan/work --name meu_contenedor_jupyter jupyter/pyspark-notebook:spark-3.3.2
+
+## Reiniciar o Contêiner Existente:
+docker start meu_contenedor_jupyter
+docker attach meu_contenedor_jupyter
+
