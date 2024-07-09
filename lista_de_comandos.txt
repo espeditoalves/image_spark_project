@@ -16,6 +16,20 @@ poetry install --no-root
 docker run -p 8888:8888 -v /caminho/local/do/seu/projeto:/home/jovyan/work --name meu_contenedor_jupyter jupyter/pyspark-notebook:spark-3.3.2
 
 ## Reiniciar o Contêiner Existente:
-docker start meu_contenedor_jupyter
-docker attach meu_contenedor_jupyter
+docker start meu_container_base
+docker attach meu_container_base
+- Será necessário usar: docker exec -it meu_container_base bash
+- Será necessário usar: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+
+## Verificar os Kernels Disponíveis:
+jupyter kernelspec list
+
+
+## Instalar o Kernel do Poetry:
+poetry add ipykernel
+
+## Adicionar o Kernel do Poetry ao Jupyter:
+python -m ipykernel install --user --name=image-spark-project-py3.10 --display-name "Python (Poetry)"
+
+
 
