@@ -4,6 +4,7 @@ name = "image_spark_project"
 version = "0.1.0"
 description = "Este projeto tem o objetivo de testar a imagem do spark usando o docker."
 authors = ["Espedito Ferreira Alves"]
+package-mode = false  # Desativa o empacotamento do projeto, utilizando o Poetry apenas para gerenciamento de dependências
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -1,3 +1,19 @@
+- [image\_spark\_project](#image_spark_project)
+  - [Tools used in this project](#tools-used-in-this-project)
+  - [Project Structure](#project-structure)
+- [Iniciando o docker nesse repositório:](#iniciando-o-docker-nesse-repositório)
+  - [lista os containers:](#lista-os-containers)
+  - [Iniciar o Contêiner Nomeando-o:](#iniciar-o-contêiner-nomeando-o)
+  - [Reiniciar o Contêiner Existente:](#reiniciar-o-contêiner-existente)
+  - [Iniciar jupyter notebook](#iniciar-jupyter-notebook)
+- [Dentro do Docker: Ambiente do jupyter notebook web](#dentro-do-docker-ambiente-do-jupyter-notebook-web)
+  - [Verificar os Kernels Disponíveis:](#verificar-os-kernels-disponíveis)
+  - [Instalador do poetry](#instalador-do-poetry)
+  - [ignorar o pacote raiz:](#ignorar-o-pacote-raiz)
+  - [Instalar o Kernel do Poetry:](#instalar-o-kernel-do-poetry)
+  - [Ativar o Ambiente virtual do poetry](#ativar-o-ambiente-virtual-do-poetry)
+    - [Adicionar o Kernel do Poetry ao Jupyter:](#adicionar-o-kernel-do-poetry-ao-jupyter)
+
 # image_spark_project
 
 ## Tools used in this project
@@ -58,69 +74,93 @@
     └── test_train_model.py         # test functions for train_model.py
 ```
 
-## Set up the environment
+# Iniciando o docker nesse repositório:
 
+> SEM INICIAR O DOCKER DESCKTOP MANUALMENTE
 
-1. Install [Poetry](https://python-poetry.org/docs/#installation)
-2. Activate the virtual environment:
+**Em seguinda posso fazer o código abaixo ou o código renomeando o container.**
+
+```bash
+docker run -p 8888:8888 -v C:\Users\esped\Documents\Respositorio_git\Repositorio_projetos\image_spark_project:/home/jovyan/work jupyter/pyspark-notebook:spark-3.3.2
+```
+
+## lista os containers:
+
+```bash 
+docker ps
+```
+
+## Iniciar o Contêiner Nomeando-o:
+```bash
+docker run -p 8888:8888 -v /caminho/local/do/seu/projeto:/home/jovyan/work --name meu_container_base jupyter/pyspark-notebook:spark-3.3.2
+```
+Fazendo esse processo acima eu não preciso apagar o conteiner em execução e quando eu abrir o computador eu simplesmente uso os comandos abaixo para iniciar o container
+
+## Reiniciar o Contêiner Existente:
+```bash
+docker start meu_container_base
+docker attach meu_container_base
+```
+
+- Será necessário abrir terminal dentro do container: 
+```bash
+docker exec -it meu_container_base bash
+```
+## Iniciar jupyter notebook
+
+```bash
+jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+```
+
+> Após esse processo irá surgir alguns logs com um link para abrir o jupyter notebook no navegador.
+
+# Dentro do Docker: Ambiente do jupyter notebook web
+
+No terminal do jupyter notebook web:
+
+## Verificar os Kernels Disponíveis:
+```bash
+jupyter kernelspec list
+```
+## Instalador do poetry
+
+[Poetry](https://python-poetry.org/docs/#installing-with-pipx)
+
+## ignorar o pacote raiz:
+Desativa o empacotamento do projeto, utilizando o Poetry apenas para gerenciamento de dependências
+
+```bash
+poetry install --no-root
+```
+
+## Instalar o Kernel do Poetry:
+```bash
+poetry add ipykernel
+```
+
+## Ativar o Ambiente virtual do poetry
+
 ```bash
 poetry shell
 ```
-3. Install dependencies:
-- To install all dependencies from pyproject.toml, run:
-```bash
-poetry install
-```
-- To install only production dependencies, run:
-```bash
-poetry install --only main
-```
-- To install a new package, run:
-```bash
-poetry add <package-name>
-```
 
+### Adicionar o Kernel do Poetry ao Jupyter:
 
-## View and alter configurations
-To view the configurations associated with a Pythons script, run the following command:
-```bash
-python src/process.py --help
-```
-Output:
-```yaml
-process is powered by Hydra.
-
-== Configuration groups ==
-Compose your configuration from those groups (group=option)
-
-model: model1, model2
-process: process1, process2
-
-
-== Config ==
-Override anything in the config (foo.bar=value)
-
-process:
-  use_columns:
-  - col1
-  - col2
-model:
-  name: model1
-data:
-  raw: data/raw/sample.csv
-  processed: data/processed/processed.csv
-  final: data/final/final.csv
-```
-
-To alter the configurations associated with a Python script from the command line, run the following:
-```bash
-python src/process.py data.raw=sample2.csv
-```
-
-## Auto-generate API documentation
-
-To auto-generate API document for your project, run:
+Após instalar o ipykernel no ambiente virtual do Poetry, você pode adicionar o kernel do Poetry ao Jupyter Notebook com o seguinte comando:
 
 ```bash
-make docs
+python -m ipykernel install --user --name=image-spark-project-py3.10 --display-name "Python (Poetry)"
 ```
+
+* `--name=image-spark-project-py3.10`: Especifique o nome do ambiente virtual do Poetry que você deseja usar como base para o kernel.
+* `--display-name "Python (Poetry)"`: Especifique o nome que deseja que apareça na lista de kernels do Jupyter Notebook.
+Selecionar o Kernel do Poetry no Jupyter Notebook:
+Depois de adicionar o kernel, você pode selecioná-lo ao criar um novo notebook ou alterar o kernel de um notebook existente:
+
+Crie um novo notebook ou abra um notebook existente.
+Vá para o menu **"Kernel"** e selecione **"Change Kernel"**.
+Selecione **"Python (Poetry)"** ou o nome que você especificou ao adicionar o kernel do Poetry.
+
+Agora, o notebook estará utilizando o kernel associado ao ambiente virtual do Poetry, garantindo que todas as dependências do seu projeto sejam utilizadas corretamente.
+
+Esses passos devem ajudar a configurar e usar o kernel do Poetry no Jupyter Notebook dentro do seu ambiente Docker, garantindo que você esteja trabalhando com as dependências corretas do seu projeto.
