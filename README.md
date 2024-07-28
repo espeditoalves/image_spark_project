@@ -1,5 +1,4 @@
-- [image\_spark\_project](#image_spark_project)
-  - [Tools used in this project](#tools-used-in-this-project)
+- [Imagem spark](#imagem-spark)
   - [Project Structure](#project-structure)
 - [Iniciando o docker nesse repositório:](#iniciando-o-docker-nesse-repositório)
   - [lista os containers:](#lista-os-containers)
@@ -22,15 +21,11 @@
       - [3.0 Encontre a opção de selecionar Kernel:](#30-encontre-a-opção-de-selecionar-kernel)
       - [4.0 Inserir a URL do Jupyter com o Token:](#40-inserir-a-url-do-jupyter-com-o-token)
 
-# image_spark_project
+# Imagem spark
 
-## Tools used in this project
-* [hydra](https://hydra.cc/): Manage configuration files - [article](https://mathdatasimplified.com/stop-hard-coding-in-a-data-science-project-use-configuration-files-instead/)
-* [pdoc](https://github.com/pdoc3/pdoc): Automatically create an API documentation for your project
-* [pre-commit plugins](https://pre-commit.com/): Automate code reviewing formatting
-
-* [Poetry](https://towardsdatascience.com/how-to-effortlessly-publish-your-python-package-to-pypi-using-poetry-44b305362f9f): Dependency management - [article](https://mathdatasimplified.com/poetry-a-better-way-to-manage-python-dependencies/)
-
+>Este projeto trabalha com uma estrutura de pastas padrão na qual tenho trabalhado com projetos de Ciência de Dados.
+>
+>Meu objetivo é manter uma estrutura padrão em todos os meus repositório.
 
 ## Project Structure
 
@@ -84,7 +79,7 @@
 
 # Iniciando o docker nesse repositório:
 
-> SEM INICIAR O DOCKER DESCKTOP MANUALMENTE
+> INICIAR O DOCKER DESCKTOP MANUALMENTE
 
 **Em seguinda posso fazer o código abaixo ou o código renomeando o container.**
 
