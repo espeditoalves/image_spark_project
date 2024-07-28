@@ -4,8 +4,7 @@
 - [Iniciando o docker nesse repositório:](#iniciando-o-docker-nesse-repositório)
   - [lista os containers:](#lista-os-containers)
   - [Iniciar o Contêiner Nomeando-o:](#iniciar-o-contêiner-nomeando-o)
-  - [Reiniciar o Contêiner Existente:](#reiniciar-o-contêiner-existente)
-  - [Iniciar jupyter notebook](#iniciar-jupyter-notebook)
+  - [CASO NÃO TENHA UM CONTEINER EXISTENTE - Iniciar jupyter notebook](#caso-não-tenha-um-conteiner-existente---iniciar-jupyter-notebook)
 - [Dentro do Docker: Ambiente do jupyter notebook web](#dentro-do-docker-ambiente-do-jupyter-notebook-web)
   - [Verificar os Kernels Disponíveis:](#verificar-os-kernels-disponíveis)
   - [Instalador do poetry](#instalador-do-poetry)
@@ -13,6 +12,15 @@
   - [Instalar o Kernel do Poetry:](#instalar-o-kernel-do-poetry)
   - [Ativar o Ambiente virtual do poetry](#ativar-o-ambiente-virtual-do-poetry)
     - [Adicionar o Kernel do Poetry ao Jupyter:](#adicionar-o-kernel-do-poetry-ao-jupyter)
+    - [Verificar Diretórios de Kernel](#verificar-diretórios-de-kernel)
+    - [Copiar o Kernel para o Diretório Correto](#copiar-o-kernel-para-o-diretório-correto)
+    - [Reiniciar o Jupyter Notebook](#reiniciar-o-jupyter-notebook)
+- [Reiniciar o Contêiner Existente:](#reiniciar-o-contêiner-existente)
+  - [Passo a Passo para Obter o Token do Jupyter e Usar no VSCode](#passo-a-passo-para-obter-o-token-do-jupyter-e-usar-no-vscode)
+      - [1.0 Entre no Contêiner:](#10-entre-no-contêiner)
+      - [2.0 Execute o Comando Python:](#20-execute-o-comando-python)
+      - [3.0 Encontre a opção de selecionar Kernel:](#30-encontre-a-opção-de-selecionar-kernel)
+      - [4.0 Inserir a URL do Jupyter com o Token:](#40-inserir-a-url-do-jupyter-com-o-token)
 
 # image_spark_project
 
@@ -96,17 +104,7 @@ docker run -p 8888:8888 -v /caminho/local/do/seu/projeto:/home/jovyan/work --nam
 ```
 Fazendo esse processo acima eu não preciso apagar o conteiner em execução e quando eu abrir o computador eu simplesmente uso os comandos abaixo para iniciar o container
 
-## Reiniciar o Contêiner Existente:
-```bash
-docker start meu_container_base
-docker attach meu_container_base
-```
-
-- Será necessário abrir terminal dentro do container: 
-```bash
-docker exec -it meu_container_base bash
-```
-## Iniciar jupyter notebook
+## CASO NÃO TENHA UM CONTEINER EXISTENTE - Iniciar jupyter notebook
 
 ```bash
 jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
@@ -164,3 +162,90 @@ Selecione **"Python (Poetry)"** ou o nome que você especificou ao adicionar o k
 Agora, o notebook estará utilizando o kernel associado ao ambiente virtual do Poetry, garantindo que todas as dependências do seu projeto sejam utilizadas corretamente.
 
 Esses passos devem ajudar a configurar e usar o kernel do Poetry no Jupyter Notebook dentro do seu ambiente Docker, garantindo que você esteja trabalhando com as dependências corretas do seu projeto.
+
+### Verificar Diretórios de Kernel
+
+O problema pode ser que o kernel foi instalado em um diretório diferente do que o Jupyter Notebook está verificando. Use os comandos abaixo para verificar os diretórios de kernel do Jupyter:
+
+```bash
+jupyter --paths
+```
+Isso exibirá algo como:
+
+```bash
+config:
+    /home/jovyan/.jupyter
+    /usr/local/etc/jupyter
+    /etc/jupyter
+data:
+    /home/jovyan/.local/share/jupyter
+    /usr/local/share/jupyter
+    /usr/share/jupyter
+runtime:
+    /home/jovyan/.local/share/jupyter/runtime
+```
+Certifique-se de que o kernel está instalado em um dos diretórios data.
+
+### Copiar o Kernel para o Diretório Correto
+
+Se o kernel está em um diretório diferente, você pode copiá-lo para o local correto. 
+Supondo que o kernel está em **`/home/jovyan/.local/share/jupyter/kernels/`**:
+
+```bash
+cp -r /home/jovyan/.local/share/jupyter/kernels/sparklogimetrics-py3.10 /home/jovyan/work/.venv/share/jupyter/kernels/
+```
+**`LEMBRA QUE VOCÊ ESTÁ USANDO UM CONTAINER E ESTÃO OLHE O SISTEMA DE PASTAS LINUX`**
+Isso move o kernel para o diretório que o Jupyter está usando dentro do seu contêiner.
+
+### Reiniciar o Jupyter Notebook
+Após reinstalar ou mover o kernel, reinicie o servidor Jupyter Notebook. No terminal do seu contêiner:
+
+```bash
+jupyter notebook stop
+jupyter notebook start
+```
+Ou, se você estiver usando o Docker diretamente:
+
+```bash
+docker restart sparklogimetrics
+```
+
+# Reiniciar o Contêiner Existente:
+```bash
+docker start meu_container_base
+docker attach meu_container_base
+```
+
+- Será necessário abrir terminal dentro do container: 
+```bash
+docker exec -it meu_container_base bash
+```
+> **`OBSERVAÇÃO:`**
+> 
+> O comportamento que você está observando é comum ao usar o comando docker exec para interagir com um contêiner que já está executando o Jupyter Notebook ou JupyterLab. Quando você usa docker exec -it meu_container_base bash, você entra no terminal do contêiner, mas isso não tem influência direta sobre como o Jupyter está acessível ou exibido no navegador ou VSCode. O que ocorre é que, quando você inicia ou interage com o Jupyter, o link padrão pode abrir automaticamente em um navegador padrão do seu sistema, mas pode não se integrar ao VSCode diretamente. Vamos resolver isso para que você possa acessar o Jupyter diretamente no VSCode.
+> 
+
+## Passo a Passo para Obter o Token do Jupyter e Usar no VSCode
+
+#### 1.0 Entre no Contêiner:
+```bash
+docker exec -it meu_container_base bash
+```
+#### 2.0 Execute o Comando Python:
+```bash
+jupyter notebook list
+```
+Isso mostrará uma saída semelhante a esta:
+```bash
+Currently running servers:
+http://0.0.0.0:8888/?token=abc123def456 :: /home/jovyan
+```
+
+#### 3.0 Encontre a opção de selecionar Kernel:
+Geralmente clico no canto superior direito do jupyter notebook, **`Select Kernel`**
+#### 4.0 Inserir a URL do Jupyter com o Token:
+```bash
+http://127.0.0.1:8888/?token=abc123def456
+```
+Cole esta URL na caixa de diálogo e pressione Enter.
+
